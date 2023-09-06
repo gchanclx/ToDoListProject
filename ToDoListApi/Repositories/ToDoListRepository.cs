@@ -14,21 +14,29 @@ namespace ToDoListApi.Repositories
             this._dbContextClass = dbContextClass;
         }
 
-        public async Task<ToDoList> CreateToDoList(ToDoList todolist)
+        public async Task<IEnumerable<ToDoTask>> GetAllTasksAsync()
         {
-            var result = await _dbContextClass.ToDoList.AddAsync(todolist);
+            return await _dbContextClass.ToDoTasks.ToListAsync();
+        }
+
+        public async Task<ToDoTask> CreateTaskAsync(ToDoTask toDoTask)
+        {
+            DateTime dt = DateTime.Now;
+            toDoTask.CreatedDate = dt;
+
+            var result = await _dbContextClass.ToDoTasks.AddAsync(toDoTask);
             await _dbContextClass.SaveChangesAsync();
             return result.Entity;
         }
 
-        public async Task<ToDoList> DeleteToDoList(int Id)
+        public async Task<ToDoTask> DeleteTaskAsync(int Id)
         {
-            var result = await _dbContextClass.ToDoList
+            var result = await _dbContextClass.ToDoTasks
                 .FirstOrDefaultAsync(t => t.Id == Id);
 
             if (result != null)
             {
-                _dbContextClass.ToDoList.Remove(result);
+                _dbContextClass.ToDoTasks.Remove(result);
                 await _dbContextClass.SaveChangesAsync();
                 return result;
             }
@@ -36,35 +44,29 @@ namespace ToDoListApi.Repositories
             return null;
         }
 
-        
-
-        public async Task<IEnumerable<ToDoList>> GetToDoLists()
+        public async Task<ToDoTask> GetTaskByIdAsync(int Id)
         {
-            return await _dbContextClass.ToDoList.ToArrayAsync();
+            return await _dbContextClass.ToDoTasks
+                .FirstOrDefaultAsync(t => t.Id == Id);
         }
 
-        public async Task<ToDoList> GetToDoList(int ToDoListId)
+        public async Task<ToDoTask> GetTaskByDescriptionAsync(string taskDesc)
         {
-            return await _dbContextClass.ToDoList
-                .FirstOrDefaultAsync(t => t.Id == ToDoListId);
-        }
+            var result = await _dbContextClass.ToDoTasks
+                .FirstOrDefaultAsync(t => t.TaskDesc == taskDesc);
 
-        public async Task<ToDoList> GetToDoList(string title)
-        {
-            return await _dbContextClass.ToDoList
-                .FirstOrDefaultAsync(t => t.Title == title);
+            return result;
 
         }
 
-        public async Task<ToDoList> UpdateToDoList(int Id, ToDoList todolist)
+        public async Task<ToDoTask> UpdateTaskAsync(int Id)
         {
-            var result = await _dbContextClass.ToDoList
+            var result = await _dbContextClass.ToDoTasks
                 .FirstOrDefaultAsync (t => t.Id == Id);
 
             if (result != null)
             {
-                result.Title = todolist.Title;
-                result.Description = todolist.Description;
+                result.IsCompleted = !result.IsCompleted;
 
                 await _dbContextClass.SaveChangesAsync();
                 return result;

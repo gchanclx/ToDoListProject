@@ -1,0 +1,27 @@
+﻿@page "/"
+@inherits ToDoListingBase
+
+<h3>ToDoList</h3>
+
+<div class="container py-5 h-100">
+    <div class="row d-flex justify-content-center align-items-center h-100">
+        <div class="col col-xl-10">
+            <div class="card">
+                <div class="card-body p-5">
+                    <form class="d-flex justify-content-center align-items-center mb-4">
+                        <div class="form-outline flex-fill">
+                            <input type="text" id="form2" class="form-control" />
+                            <lable class="form-label" for="form2">New Task...</lable>
+                        </div>
+                        <button type="submit" class="btn btn-info ms-2">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" fill="currentColor" class="bi bi-plus-circle-fill" viewBox="0 0 16 16">
+                                <path d="M16 8A8 8 0 1 1 0 8a8 8 0 0 1 16 0zM8.5 4.5a.5.5 0 0 0-1 0v3h-3a.5.5 0 0 0 0 1h3v3a.5.5 0 0 0 1 0v-3h3a.5.5 0 0 0 0-1h-3v-3z"></path>
+                            </svg>
+                        </button>
+                    </form>
+
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

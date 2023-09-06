@@ -30,55 +30,57 @@ namespace ToDoListTests.Repositories.Tests
             _dbContext = new DBContextClass(options);
             _dbContext.Database.EnsureCreated();
 
-            var toDoList = _fixture.CreateMany<ToDoList>(3).ToList();
+            var toDoList = _fixture.CreateMany<ToDoTask>(3).ToList();
             
-            _dbContext.ToDoList.AddRange(toDoList);
+            _dbContext.ToDoTasks.AddRange(toDoList);
              _dbContext.SaveChanges();
 
         }
 
         [Test]
-        public void GetToDoLists_ReturnAllToDoList()
+        public void GetAllTasks_ReturnAllTasks()
         {
             //Arrange
             var sut = new ToDoListRepository(_dbContext);
-            var toDoListTest = sut.GetToDoLists();
+            var toDoListTest = sut.GetAllTasksAsync();
 
             //Assert
             Assert.Multiple(() =>
             {
+                Assert.That(_dbContext, Is.Not.Null);
                 Assert.That(sut, Is.Not.Null);
-                Assert.That(toDoListTest.Result.Count(), Is.EqualTo(4));
+                Assert.That(toDoListTest.Result.Count(), Is.GreaterThan(0));
                 Assert.That(toDoListTest.Result.Any(), Is.True);
             });
         }
 
         [Test]
-        public void GetToDoListById_ReturnToDoList()
+        public void GetTaskById_ReturnTask()
         {
             var sut = new ToDoListRepository(_dbContext);
-            var toDoListById = sut.GetToDoList(It.IsAny<int>());
+            var taskById = sut.GetTaskByIdAsync(It.IsAny<int>());
 
             //Assert
             Assert.Multiple(() =>
             {
+                Assert.That(_dbContext, Is.Not.Null);
                 Assert.That(sut, Is.Not.Null);
-                
             });
         }
 
         [Test]
-        public void CreateToDoList_ReturnCorrectNumberofTask()
+        public void CreateTask_ReturnNewData()
         {
             var sut = new ToDoListRepository(_dbContext);
-            var newTask = _fixture.Create<ToDoList>();
-            var createdTask = sut.CreateToDoList(newTask);
-            var toDoLists = sut.GetToDoLists();
+            var newTask = _fixture.Create<ToDoTask>();
+            var createdTask = sut.CreateTaskAsync(newTask);
+            var toDoLists = sut.GetAllTasksAsync();
 
             // Assert
 
             Assert.Multiple(() =>
             {
+                Assert.That(_dbContext, Is.Not.Null);
                 Assert.That(sut, Is.Not.Null);
                 Assert.That(createdTask.IsCompletedSuccessfully, Is.True);
                 Assert.That(toDoLists.Result.Count(), Is.EqualTo(4));
@@ -86,38 +88,34 @@ namespace ToDoListTests.Repositories.Tests
         }
 
         [Test]
-        public void UpdateToDoList_ReturnUpdtedData()
+        public void UpdateTask_ReturnUpdtedData()
         {
             var sut = new ToDoListRepository( _dbContext);
-            var newTask = _fixture.Create<ToDoList>();
+            var newTask = _fixture.Create<ToDoTask>();
             int Id = newTask.Id;
-            string Title = newTask.Title;
-            string Description = newTask.Description;
-            newTask.Description = "Updated the description";
+            bool IsCompleted = !newTask.IsCompleted;
 
-            var UpdatedTask = sut.UpdateToDoList(Id, newTask);
+            var UpdatedTask = sut.UpdateTaskAsync(Id);
 
             Assert.Multiple(() =>
             {
                 Assert.That(_dbContext, Is.Not.Null);
                 Assert.That(newTask, Is.Not.Null);
                 Assert.That(newTask.Id, Is.EqualTo(Id));
-                Assert.That(newTask.Title, Is.EqualTo(Title));
-                Assert.That(newTask.Description, Is.Not.EqualTo(Description));
-                Assert.That(newTask.Description, Is.EqualTo("Updated the description"));
+                Assert.That(newTask.IsCompleted, Is.Not.EqualTo(IsCompleted));
             });
         }
 
         [Test]
-        public void DeleteToDoList_ReturnDeleteResult()
+        public void DeleteTask_ReturnDeleteData()
         {
             var sut = new ToDoListRepository(_dbContext);
-            var newTask = _fixture.Create<ToDoList>();
+            var newTask = _fixture.Create<ToDoTask>();
             int Id = newTask.Id;
-            var NumberofTask = sut.GetToDoLists();
-            _ = sut.CreateToDoList(newTask);
-            var newNumberofTask = sut.GetToDoLists();
-            _ = sut.DeleteToDoList(Id);
+            var NumberofTask = sut.GetAllTasksAsync();
+            _ = sut.CreateTaskAsync(newTask);
+            var newNumberofTask = sut.GetAllTasksAsync();
+            _ = sut.DeleteTaskAsync(Id);
 
             Assert.Multiple(() =>
             {

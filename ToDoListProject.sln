@@ -3,13 +3,13 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio Version 17
 VisualStudioVersion = 17.7.34024.191
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToDoListModels", "ToDoListModels\ToDoListModels.csproj", "{F84E6D8D-D282-41AA-934D-7773F44B7327}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ToDoListModels", "ToDoListModels\ToDoListModels.csproj", "{F84E6D8D-D282-41AA-934D-7773F44B7327}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToDoListApp", "ToDoListApp\ToDoListApp.csproj", "{838FD6C4-B188-40C2-A7A7-E3A817674A56}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ToDoListApp", "ToDoListApp\ToDoListApp.csproj", "{838FD6C4-B188-40C2-A7A7-E3A817674A56}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToDoListApi", "ToDoListApi\ToDoListApi.csproj", "{BCF3C009-EC65-4B36-B5BB-567E8D9846D6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ToDoListApi", "ToDoListApi\ToDoListApi.csproj", "{BCF3C009-EC65-4B36-B5BB-567E8D9846D6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ToDoListTests", "ToDoListTests\ToDoListTests.csproj", "{A49C745A-5E89-483C-8F40-A7CEBF5CC239}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ToDoListTests", "ToDoListTests\ToDoListTests.csproj", "{A49C745A-5E89-483C-8F40-A7CEBF5CC239}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution

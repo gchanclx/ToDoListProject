@@ -13,25 +13,25 @@ using Microsoft.AspNetCore.Mvc;
 namespace ToDoListTests.Controllers.Tests
 {
     [TestFixture]
-    public class ToDoListControllersTest
+    public class TaskControllersTest
     {
         private Mock<IToDoListRepository> _repositoryMock;
         private Fixture _fixture;
         private ToDoListController _controller;
 
-        public ToDoListControllersTest()
+        public TaskControllersTest()
         {
             _fixture = new Fixture();
             _repositoryMock = new Mock<IToDoListRepository>();
         }
 
         [Test]
-        public async Task GetToDoLists_ShouldReturnStatusCode200()
+        public async Task GetAllTask_ShouldReturnStatusCode200()
         {
-            var toDoList = _fixture.CreateMany<ToDoList>();
-            _repositoryMock.Setup(t => t.GetToDoLists()).ReturnsAsync(toDoList);
+            var toDoList = _fixture.CreateMany<ToDoTask>();
+            _repositoryMock.Setup(t => t.GetAllTasksAsync()).ReturnsAsync(toDoList);
             _controller = new ToDoListController(_repositoryMock.Object);
-            var result = new OkObjectResult(_controller.GetAllToDoList());
+            var result = new OkObjectResult(_controller.GetAllTasks());
 
             Assert.Multiple(() =>
             {
@@ -42,27 +42,10 @@ namespace ToDoListTests.Controllers.Tests
         }
 
         [Test]
-        public async Task GetToDoListById_ShouldReturnStatusCode200()
+        public async Task GetTaskById_ShouldReturnStatusCode200()
         {
-            var toDoList = _fixture.Create<ToDoList>();
-            _repositoryMock.Setup(t => t.GetToDoList(It.IsAny<int>())).ReturnsAsync(toDoList);
-            _controller = new ToDoListController(_repositoryMock.Object);
-            var result = new OkObjectResult(_repositoryMock.Object);
-
-            // Assert
-            Assert.Multiple(() =>
-            {
-                Assert.That(_controller, Is.Not.Null);
-                Assert.That(result.StatusCode, Is.EqualTo(200));
-                Assert.That(result, Is.Not.Null);
-            });
-        }
-
-        [Test]
-        public async Task CreateToDoList_ShouldReturnStatusCode200()
-        {
-            var newToDoList = _fixture.Create<ToDoList>();
-            _repositoryMock.Setup(t => t.CreateToDoList(newToDoList));
+            var toDoTask = _fixture.Create<ToDoTask>();
+            _repositoryMock.Setup(t => t.GetTaskByIdAsync(It.IsAny<int>())).ReturnsAsync(toDoTask);
             _controller = new ToDoListController(_repositoryMock.Object);
             var result = new OkObjectResult(_repositoryMock.Object);
 
@@ -76,14 +59,29 @@ namespace ToDoListTests.Controllers.Tests
         }
 
         [Test]
-        public async Task UpdateToDoList_ShouldReturnStatusCode200()
+        public async Task CreateTask_ShouldReturnStatusCode200()
         {
-            var newToDoList = _fixture.Create<ToDoList>();
+            var newTask = _fixture.Create<ToDoTask>();
+            _repositoryMock.Setup(t => t.CreateTaskAsync(newTask));
+            _controller = new ToDoListController(_repositoryMock.Object);
+            var result = new OkObjectResult(_repositoryMock.Object);
+
+            // Assert
+            Assert.Multiple(() =>
+            {
+                Assert.That(_controller, Is.Not.Null);
+                Assert.That(result.StatusCode, Is.EqualTo(200));
+                Assert.That(result, Is.Not.Null);
+            });
+        }
+
+        [Test]
+        public async Task UpdateTask_ShouldReturnStatusCode200()
+        {
+            var newToDoList = _fixture.Create<ToDoTask>();
             int Id = newToDoList.Id;
-            string Title = newToDoList.Title;
-            string Description = newToDoList.Description;
-            newToDoList.Description = "Update the description";
-            _repositoryMock.Setup(t => t.UpdateToDoList(Id, newToDoList));
+            bool IsCompleted = !newToDoList.IsCompleted;
+            _repositoryMock.Setup(t => t.UpdateTaskAsync(Id));
             _controller = new ToDoListController(_repositoryMock.Object);
             var result = new OkObjectResult(_repositoryMock.Object);
 
@@ -98,11 +96,11 @@ namespace ToDoListTests.Controllers.Tests
         }
 
         [Test]
-        public async Task DeleteToDoList_ShouldReturnStatusCode200()
+        public async Task DeleteTask_ShouldReturnStatusCode200()
         {
-            var newToDoList = _fixture.Create<ToDoList>();
-            int Id = newToDoList.Id;            
-            _repositoryMock.Setup(t => t.DeleteToDoList(Id));
+            var newTask = _fixture.Create<ToDoTask>();
+            int Id = newTask.Id;            
+            _repositoryMock.Setup(t => t.DeleteTaskAsync(Id));
             _controller = new ToDoListController(_repositoryMock.Object);
             var result = new OkObjectResult(_repositoryMock.Object);
 

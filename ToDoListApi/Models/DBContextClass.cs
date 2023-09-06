@@ -11,6 +11,6 @@ namespace ToDoListApi.Models
         {
         }
 
-        public DbSet<ToDoList> ToDoList { get; set; }
+        public DbSet<ToDoTask> ToDoTasks { get; set; }
     }
 }

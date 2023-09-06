@@ -17,11 +17,11 @@ namespace ToDoListApi.Controllers
         }
 
         [HttpGet]
-        public async Task<ActionResult<IEnumerable<ToDoList>>> GetAllToDoList()
+        public async Task<ActionResult<IEnumerable<ToDoTask>>> GetAllTasks()
         {
             try
             {
-                return Ok(await _repository.GetToDoLists());
+                return (await _repository.GetAllTasksAsync()).ToList();
             }
             catch (Exception)
             {
@@ -31,16 +31,16 @@ namespace ToDoListApi.Controllers
         }
 
         [HttpGet("{Id:int}")]
-        public async Task<ActionResult<ToDoList>> GetToDoListById(int Id)
+        public async Task<ActionResult<ToDoTask>> GetTaskById(int Id)
         {
             try
             {
-                var result = await _repository.GetToDoList(Id);
+                var result = await _repository.GetTaskByIdAsync(Id);
                 if (result == null)
                 {
                     return NotFound();
                 }
-                return Ok(result);
+                return result;
             }
             catch (Exception)
             {
@@ -50,52 +50,48 @@ namespace ToDoListApi.Controllers
         }
 
         [HttpPost]
-        public async Task<ActionResult<ToDoList>> CreateToDoList(ToDoList toDoList)
+        public async Task<ActionResult<ToDoTask>> CreateTask(ToDoTask toDoTask)
         {
             try
             {
-                if (toDoList == null)
+                if (toDoTask == null)
                 {
                     return BadRequest();
                 }
+                
+                var newTask = await _repository.GetTaskByDescriptionAsync(toDoTask.TaskDesc);
 
-                var todolist = _repository.GetToDoList(toDoList.Title);
-                if (todolist != null)
+                if (newTask != null)
                 {
-                    ModelState.AddModelError("title", "The title is already in use.");
+                    ModelState.AddModelError("Task", "The Task is already existing.");
                     return BadRequest(ModelState);
                 }
+                
+                var createdTask = await _repository.CreateTaskAsync(toDoTask);
 
-                var createdToDoList = await _repository.CreateToDoList(toDoList);
-
-                return CreatedAtAction(nameof(GetToDoListById),
-                    new { id = createdToDoList.Id }, createdToDoList);
+                return CreatedAtAction(nameof(GetTaskById),
+                    new { id = createdTask.Id }, createdTask);
             }
             catch (Exception)
             {
                 return StatusCode(StatusCodes.Status500InternalServerError,
-                    "Error creating new ToDoList.");
+                    "Error creating new Task.");
             }            
         }
 
         [HttpPut("{id:int}")]
-        public async Task<ActionResult<ToDoList>> UpdateToDoList(int Id, ToDoList toDoList)
+        public async Task<ActionResult<ToDoTask>> UpdateTask(int Id)
         {
             try
             {
-                if (Id != toDoList.Id)
-                {
-                    return BadRequest("ID does not match.");
-                }
-
-                var toDoListUpdate = await _repository.GetToDoList(Id);
+                var toDoListUpdate = await _repository.GetTaskByIdAsync(Id);
 
                 if (toDoListUpdate == null)
                 {
-                    return NotFound($"ToDoList with Id = {Id} not found.");
+                    return NotFound($"Task Id: {Id} not found.");
                 }
 
-                return await _repository.UpdateToDoList(Id, toDoList);
+                return await _repository.UpdateTaskAsync(Id);
 
             }
             catch (Exception)
@@ -106,18 +102,18 @@ namespace ToDoListApi.Controllers
         }
 
         [HttpDelete("{id:int}")]
-        public async Task<ActionResult<ToDoList>> DeleteToDoList(int Id)
+        public async Task<ActionResult<ToDoTask>> DeleteTask(int Id)
         {
             try
             {
-                var toDoListDetele = await _repository.GetToDoList(Id);
+                var toDoListDetele = await _repository.GetTaskByIdAsync(Id);
 
                 if (toDoListDetele == null)
                 {
-                    return NotFound($"ToDoList with Id {Id} not Found.");
+                    return NotFound($"Task Id: {Id} not Found.");
                 }
 
-                return await _repository.DeleteToDoList(Id);
+                return await _repository.DeleteTaskAsync(Id);
             }
             catch (Exception)
             {

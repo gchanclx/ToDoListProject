@@ -4,11 +4,11 @@ namespace ToDoListApi.Repositories
 {
     public interface IToDoListRepository
     {
-        public Task<IEnumerable<ToDoList>> GetToDoLists();
-        public Task<ToDoList> GetToDoList(int Id);
-        public Task<ToDoList> GetToDoList(string title);
-        public Task<ToDoList> CreateToDoList(ToDoList todolist);
-        public Task<ToDoList> UpdateToDoList(int Id, ToDoList todolist);
-        public Task<ToDoList> DeleteToDoList(int Id);
+        public Task<IEnumerable<ToDoTask>> GetAllTasksAsync();
+        public Task<ToDoTask> GetTaskByIdAsync(int Id);
+        public Task<ToDoTask> GetTaskByDescriptionAsync(string taskDesc);
+        public Task<ToDoTask> CreateTaskAsync(ToDoTask toDoTask);
+        public Task<ToDoTask> UpdateTaskAsync(int Id);
+        public Task<ToDoTask> DeleteTaskAsync(int Id);
     }
 }
